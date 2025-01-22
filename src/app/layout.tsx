@@ -1,16 +1,19 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+import { Roboto, Roboto_Mono } from 'next/font/google';
 import './globals.css';
 import Header from '@/components/Header';
+import { ClerkProvider } from '@clerk/nextjs';
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
+const roboto = Roboto({
+  variable: '--font-roboto',
   subsets: ['latin'],
+  weight: ['400', '500', '700'],
 });
 
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
+const robotoMono = Roboto_Mono({
+  variable: '--font-roboto-mono',
   subsets: ['latin'],
+  weight: ['400', '700'],
 });
 
 export const metadata: Metadata = {
@@ -24,20 +27,22 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className="min-h-screen flex flex-col"
-      >
-        {/* Toaster */}
+    <ClerkProvider>
+      <html lang="en">
+        <body
+          className={`min-h-screen flex flex-col ${roboto.variable} ${robotoMono.variable}`}
+        >
+          {/* Toaster */}
 
-        <header className="sticky top-0 z-50 border-b bg-white">
-          <Header />
-        </header>
+          <header className="sticky top-0 z-50 border-b bg-white">
+            <Header />
+          </header>
 
-        <div className="bg-[#f4f2ed] flex-1 w-full">
-          <main>{children}</main>
-        </div>
-      </body>
-    </html>
+          <div className="bg-[#f4f2ed] flex-1 w-full">
+            <main>{children}</main>
+          </div>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
