@@ -1,6 +1,7 @@
 'use server'
 
 import { currentUser } from "@clerk/nextjs/server";
+import { IUser } from "../types/user";
 
 export async function createPostAction(formData: FormData) {
     const user = await currentUser();
@@ -17,5 +18,10 @@ export async function createPostAction(formData: FormData) {
         throw new Error('You must provide a post input');
     }
 
-    
+    const userDB: IUser = {
+        userId: user.id,
+        userImage: user.imageUrl,
+        firstName: user.firstName || '',
+        lastName: user.lastName || '',
+    }
 }
