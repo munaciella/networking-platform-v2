@@ -7,19 +7,17 @@ import Image from "next/image";
 import { useUser } from "@clerk/nextjs";
 import { Button } from "./ui/button";
 import ReactTimeAgo from "react-time-ago";
-import en from "javascript-time-ago/locale/en";
-import TimeAgo from "javascript-time-ago";
 import { Badge } from "./ui/badge";
-//import { toast } from "sonner";
+import { toast } from "sonner";
 import deletePostAction from "../../actions/deletePostAction";
 import PostOptions from "./PostOptions";
 
-TimeAgo.addDefaultLocale(en);
+import "@/lib/timeAgoSetup";
 
 function Post({ post }: { post: IPostDocument }) {
   const { user } = useUser();
+const isAuthor = user?.id === post.user.userId;
 
-  const isAuthor = user?.id === post.user.userId;
   return (
     <div className="bg-white rounded-md border">
       <div className="p-4 flex space-x-2">
@@ -58,11 +56,11 @@ function Post({ post }: { post: IPostDocument }) {
               variant="outline"
               onClick={() => {
                 const promise = deletePostAction(post._id as string);
-                // toast.promise(promise, {
-                //   loading: "Deleting post...",
-                //   success: "Post deleted!",
-                //   error: "Error deleting post",
-                // });
+                toast.promise(promise, {
+                  loading: "Deleting post...",
+                  success: "Post deleted!",
+                  error: "Error deleting post",
+                });
               }}
             >
               <Trash2 />

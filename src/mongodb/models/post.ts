@@ -7,7 +7,7 @@ export interface IPostBase {
   text: string;
   imageUrl?: string;
   comments?: IComment[];
-  likes?: string;
+  likes?: string[];
 }
 
 export interface IPost extends IPostBase, Document {
