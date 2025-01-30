@@ -8,6 +8,7 @@ import { Button } from './ui/button';
 import { ImageIcon, XIcon } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { createPostAction } from '../../actions/createPostAction';
+import { toast } from 'sonner';
 
 const PostForm = () => {
   const ref = useRef<HTMLFormElement>(null);
@@ -42,9 +43,13 @@ const PostForm = () => {
   return (
     <div className="mb-2 px-1">
       <form ref={ref} action={formData => {
-        // Handle form submission with server action
-        handlePostAction(formData);
-        // Toast success or error message
+
+        const promise = handlePostAction(formData);
+        toast.promise(promise, {
+            loading: 'Posting post...',
+            success: 'Post created!',
+            error: 'Error creating post',
+            });
       }} className='p-3 bg-white rounded-lg border'>
         <div className="flex items-center space-x-2">
           <Avatar>
@@ -82,7 +87,7 @@ const PostForm = () => {
         )}
 
         <div className="flex justify-end mt-2 space-x-2">
-          <Button type="button" onClick={() => fileInputRef.current?.click()}>
+          <Button type="button" variant={preview ? 'secondary' : 'outline'} onClick={() => fileInputRef.current?.click()}>
             <ImageIcon className="mr-2" size={16} color="currentColor" />
             {preview ? 'Change' : 'Add'} image
           </Button>

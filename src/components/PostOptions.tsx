@@ -2,15 +2,15 @@
 
 import { useEffect, useState } from "react";
 import { MessageCircle, Repeat2, Send, ThumbsUpIcon } from "lucide-react";
-// import CommentForm from "./CommentForm";
-// import CommentFeed from "./CommentFeed";
-import { useUser } from "@clerk/nextjs";
+import { SignedIn, useUser } from "@clerk/nextjs";
 import { LikePostRequestBody } from "@/app/api/posts/[post_id]/like/route";
 import { IPostDocument } from "@/mongodb/models/post";
 import { cn } from "@/lib/utils";
 import { UnlikePostRequestBody } from "@/app/api/posts/[post_id]/unlike/route";
 import { Button } from "./ui/button";
-//import { toast } from "sonner";
+import CommentFeed from "./CommentFeed";
+import CommentForm from "./CommentForm";
+import { toast } from "sonner";
 
 function PostOptions({
   postId,
@@ -49,35 +49,42 @@ function PostOptions({
     setLiked(!liked);
     setLikes(newLikes);
 
-    const response = await fetch(
-      `/api/posts/${post._id}/${liked ? "unlike" : "like"}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ ...body }),
-      }
-    );
-
-    if (!response.ok) {
-      setLiked(originalLiked);
-      setLikes(originalLikes);
-      throw new Error("Failed to like or unlike post");
-    }
-
-    const fetchLikesResponse = await fetch(`/api/posts/${post._id}/like`);
-    if (!fetchLikesResponse.ok) {
-        setLiked(originalLiked);
-      setLikes(originalLikes);
-      throw new Error("Failed to fetch likes");
-    }
-
-    const newLikesData = await fetchLikesResponse.json();
-
-    setLikes(newLikesData);
-  };
-
+    const promise = fetch(
+        `/api/posts/${String(post._id)}/${liked ? "unlike" : "like"}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ ...body }),
+        }
+      ).then(async (response) => {
+        if (!response.ok) {
+          setLiked(originalLiked);
+          setLikes(originalLikes);
+          throw new Error("Failed to like or unlike post");
+        }
+  
+        const fetchLikesResponse = await fetch(`/api/posts/${post._id}/like`);
+        if (!fetchLikesResponse.ok) {
+          setLiked(originalLiked);
+          setLikes(originalLikes);
+          throw new Error("Failed to fetch likes");
+        }
+  
+        const newLikesData = await fetchLikesResponse.json();
+  
+        setLikes(newLikesData);
+      });
+  
+      // Show toast using the promise
+      toast.promise(promise, {
+        loading: "Processing...",
+        success: `Post ${liked ? "unliked" : "liked"}!`,
+        error: "Error liking/unliking post",
+      });
+    };
+    
   return (
     <div>
       <div className="flex justify-between p-4">
@@ -141,8 +148,13 @@ function PostOptions({
 
       {isCommentsOpen && (
         <div className="p-4">
-          {/* {user?.id && <CommentForm postId={postId} />}
-          <CommentFeed post={post} /> */}
+            <SignedIn>
+
+          <CommentForm 
+          postId={String(post._id)} 
+          />
+            </SignedIn>
+          <CommentFeed post={post} />
         </div>
       )}
     </div>
