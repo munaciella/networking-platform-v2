@@ -55,6 +55,8 @@ const UserInformation = async ({ posts }: { posts: IPostDocument[] }) => {
           </Button>
         </div>
       </SignedOut>
+      
+      <SignedIn>
 
       <hr className="w-full border-gray-200 my-5" />
 
@@ -67,6 +69,8 @@ const UserInformation = async ({ posts }: { posts: IPostDocument[] }) => {
         <p className="font-semibold text-gray-400">Comments</p>
         <p className="text-blue-400">{userComments.length}</p>
       </div>
+      </SignedIn>
+      
     </div>
   );
 };

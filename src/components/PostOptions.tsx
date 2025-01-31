@@ -33,7 +33,8 @@ function PostOptions({
 
   const likeOrUnlikePost = async () => {
     if (!user?.id) {
-      throw new Error("User not authenticated");
+      toast.error("You must be signed in to like or unlike a post");
+      return;
     }
 
     const originalLiked = liked;
@@ -80,9 +81,9 @@ function PostOptions({
   
       // Show toast using the promise
       toast.promise(promise, {
-        loading: "Processing...",
+        loading: liked ? "Unliking post..." : "Liking post...",
         success: `Post ${liked ? "unliked" : "liked"}!`,
-        error: "Error liking/unliking post",
+        error: `Failed to ${liked ? "unlike" : "like"} post`,
       });
     };
     

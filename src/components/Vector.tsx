@@ -8,7 +8,6 @@ const Vector = () => {
           alt="Vector"
           width={400}
           height={400}
-          layout="responsive"
         />
         </div>
 

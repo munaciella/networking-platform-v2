@@ -3,6 +3,7 @@ import { Briefcase, HomeIcon, MessagesSquareIcon, SearchIcon, UsersIcon } from '
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from './ui/button';
+import { Input } from './ui/input';
 
 const Header: React.FC = () => {
   return (
@@ -18,7 +19,7 @@ const Header: React.FC = () => {
       <div className="flex-1">
         <form className="flex items-center space-x-1 bg-gray-100 p-2 rounded-md flex-1 mx-2 max-w-96">
             <SearchIcon className='h-4 text-gray-600'/>
-            <input
+            <Input
                 type="text"
                 placeholder="Search"
                 className="bg-transparent flex-1 outline-none"

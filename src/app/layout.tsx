@@ -30,17 +30,20 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
+        <head>
+          <link rel="icon" href="/favicon.ico" />
+        </head>
         <body
           className={`min-h-screen flex flex-col ${roboto.variable} ${robotoMono.variable}`}
         >
           <Toaster position='bottom-left'/>
 
           <header className="sticky top-0 z-50 border-b bg-white">
-            <Header />
+        <Header />
           </header>
 
           <div className="bg-[#f4f2ed] flex-1 w-full">
-            <main className='max-w-6xl mx-auto'>{children}</main>
+        <main className='max-w-6xl mx-auto'>{children}</main>
           </div>
         </body>
       </html>
