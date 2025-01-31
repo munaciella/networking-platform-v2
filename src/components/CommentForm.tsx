@@ -14,33 +14,41 @@ function CommentForm({ postId }: { postId: string }) {
   const createCommentActionWithPostId = createCommentAction.bind(null, postId);
 
   const handleCommentAction = async (formData: FormData): Promise<void> => {
-      if (!user?.id) {
-        throw new Error("User not authenticated");
-      }
+    if (!user?.id) {
+      toast.error("You need to be signed in to comment!");
+      return;  // Exit early if user is not authenticated
+    }
 
     const formDataCopy = formData;
     ref.current?.reset();
 
     try {
-
       await createCommentActionWithPostId(formDataCopy);
     } catch (error) {
       console.error(`Error creating comment: ${error}`);
+      toast.error("Failed to create comment");
+    }
+  };
+
+  const handleInputClick = () => {
+    if (!user?.id) {
+      toast.error("You need to be signed in to comment!");
     }
   };
 
   return (
     <form
       ref={ref}
-      action={(formData) => {
-        const promise = handleCommentAction(formData);
-        toast.promise(promise, {
-          loading: "Creating comment...",
-          success: "Comment created!",
-          error: "Failed to create comment",
-        });
-      }}
       className="flex items-center space-x-1"
+      onSubmit={(e) => {
+        e.preventDefault();
+        if (user?.id) {
+          const formData = new FormData(ref.current!);
+          handleCommentAction(formData);
+        } else {
+          toast.error("You need to be signed in to comment!");
+        }
+      }}
     >
       <Avatar>
         <AvatarImage src={user?.imageUrl} />
@@ -56,6 +64,7 @@ function CommentForm({ postId }: { postId: string }) {
           name="commentInput"
           placeholder="Add a comment..."
           className="outline-none flex-1 text-sm bg-transparent"
+          onClick={handleInputClick}  // Trigger toast on click
         />
         <button type="submit" hidden>
           Comment

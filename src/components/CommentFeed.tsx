@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useUser } from '@clerk/nextjs';
 import { IPostDocument } from '@/mongodb/models/post';
@@ -9,11 +9,14 @@ import { toast } from 'sonner';
 import '@/lib/timeAgoSetup';
 import deleteCommentAction from '../../actions/deleteCommentAction';
 import { Trash2Icon } from 'lucide-react';
+import { useEffect, useRef } from 'react';
 
 function CommentFeed({ post }: { post: IPostDocument }) {
   const { user } = useUser();
 
   const isAuthor = user?.id === post.user.userId;
+
+  const hasToastFired = useRef(false); // Ref to track if toast has fired
 
   const handleDeleteComment = async (commentId: string) => {
     try {
@@ -28,6 +31,23 @@ function CommentFeed({ post }: { post: IPostDocument }) {
     }
   };
 
+  useEffect(() => {
+    if (!user?.id && !hasToastFired.current) {
+      toast.error('You need to be signed in to view or comment!');
+      hasToastFired.current = true; // Set flag to prevent future toasts
+    }
+  }, [user?.id]); // Only trigger toast when user id changes
+
+  const handleCommentClick = () => {
+    if (!user?.id) {
+      return;
+    }
+  };
+
+  if (!user?.id) {
+    return null;
+  }
+
   return (
     <div className="mt-3 space-y-2">
       {post.comments?.map((comment) => (
@@ -40,7 +60,10 @@ function CommentFeed({ post }: { post: IPostDocument }) {
             </AvatarFallback>
           </Avatar>
 
-          <div className="bg-gray-100 px-4 py-2 rounded-md w-full sm:w-auto md:min-w-[300px]">
+          <div
+            className="bg-gray-100 px-4 py-2 rounded-md w-full sm:w-auto md:min-w-[300px]"
+            onClick={handleCommentClick}
+          >
             <div className="flex justify-between">
               <div>
                 <div className="font-semibold">
