@@ -13,6 +13,7 @@ import CommentForm from "./CommentForm";
 import { toast } from "sonner";
 
 function PostOptions({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   postId,
   post,
 }: {
