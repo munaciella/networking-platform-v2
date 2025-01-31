@@ -43,7 +43,7 @@ const isAuthor = user?.id === post.user.userId;
             </div>
             <p className="text-xs text-gray-400">
               @{post.user.firstName}
-              {post.user.firstName}-{post.user.userId.toString().slice(-4)}
+              {post.user.lastName}-{post.user.userId.toString().slice(-4)}
             </p>
 
             <p className="text-xs text-gray-400">
