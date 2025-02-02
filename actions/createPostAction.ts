@@ -2,23 +2,21 @@
 
 import { currentUser } from '@clerk/nextjs/server';
 import { IUser } from '../types/user';
-import { Post } from '../src/mongodb/models/post';
-import { AddPostRequestBody } from '@/app/api/posts/route';
-import generateSASToken, { containerName } from '@/lib/generateSASToken';
-import { BlobServiceClient } from '@azure/storage-blob';
+import { S3 } from 'aws-sdk'; 
 import { randomUUID } from 'crypto';
 import { revalidatePath } from 'next/cache';
+import { collection, addDoc } from 'firebase/firestore';
+import { db } from '@/firebase/db';
 
-export async function createPostAction(formData: FormData) {
+export async function createPostAction(data: { text: string, imageBase64?: string }) {
   const user = await currentUser();
-
   if (!user) {
     throw new Error('User not authenticated');
   }
 
-  const postInput = formData.get('postInput') as string;
-  const image = formData.get('image') as File;
-  let image_url: undefined | string;
+  const postInput = data.text;
+  const imageBase64 = data.imageBase64;
+  let image_url: string | null = null;
 
   if (!postInput) {
     throw new Error('You must provide a post input');
@@ -32,47 +30,48 @@ export async function createPostAction(formData: FormData) {
   };
 
   try {
-    if (image.size > 0) {
-      console.log('Uploading image to Azure Blob Storage...', image);
+    if (imageBase64?.trim()) {
+      console.log('Uploading image to Cloudflare R2...');
 
-      const accountName = process.env.AZURE_STORAGE_NAME;
-      const sasToken = await generateSASToken();
+      const s3 = new S3({
+        endpoint: 'https://4b46c9ea0c0a2600df0ac627dd90a047.r2.cloudflarestorage.com', 
+        accessKeyId: process.env.CLOUDFLARE_R2_ACCESS_KEY, 
+        secretAccessKey: process.env.CLOUDFLARE_R2_SECRET_KEY, 
+        region: 'auto', 
+      });
 
-      const blobServiceClient = new BlobServiceClient(
-        `https://${accountName}.blob.core.windows.net?${sasToken}`
-      );
-
-      const containerClient =
-        blobServiceClient.getContainerClient(containerName);
-
-      const timestamp = new Date().getTime();
+      const timestamp = Date.now();
       const file_name = `${randomUUID()}_${timestamp}.png`;
 
-      const blockBlobClient = containerClient.getBlockBlobClient(file_name);
+      // Convert Base64 to Buffer
+      const base64Data = imageBase64.split(',')[1];  
+      if (base64Data) {
+        const buffer = Buffer.from(base64Data, 'base64');
+        const uploadParams = {
+          Bucket: 'networking-platform-images', 
+          Key: file_name,
+          Body: buffer,
+          ContentType: 'image/png',
+        };
 
-      const imageBuffer = await image.arrayBuffer();
-      const res = await blockBlobClient.uploadData(imageBuffer);
-      image_url = res._response.request.url;
-      console.log(
-        'Image uploaded successfully to Azure Blob Storage:',
-        image_url
-      );
-
-      const body: AddPostRequestBody = {
-        user: userDB,
-        text: postInput,
-        imageUrl: image_url,
-      };
-      await Post.create(body);
-    } else {
-      const body: AddPostRequestBody = {
-        user: userDB,
-        text: postInput,
-      };
-
-      await Post.create(body);
+        await s3.upload(uploadParams).promise();
+        image_url = `https://pub-8f5fd6db57a04cdaaa2c94011e2c3d5b.r2.dev/${file_name}`;
+        console.log('Image uploaded successfully to Cloudflare R2:', image_url);
+      }
     }
+
+    // Save post to Firestore (only once)
+    const postData = {
+      user: userDB,
+      text: postInput,
+      imageUrl: image_url,
+      createdAt: new Date(),
+    };
+
+    await addDoc(collection(db, 'posts'), postData);
+
   } catch (error) {
+    console.log("Error creating post:", error);
     throw new Error(
       `Error creating post: ${
         error instanceof Error ? error.message : String(error)

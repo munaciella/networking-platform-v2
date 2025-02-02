@@ -1,7 +1,7 @@
 "use client";
 
 import { useUser } from '@clerk/nextjs';
-import { IPostDocument } from '@/mongodb/models/post';
+import { IPostDocument } from '@/firebase/models/post';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import ReactTimeAgo from 'react-time-ago';
 import { Badge } from './ui/badge';

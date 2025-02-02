@@ -3,15 +3,14 @@ import PostForm from '@/components/PostForm';
 import UserInformation from '@/components/UserInformation';
 import Vector from '@/components/Vector';
 import Widget from '@/components/Widget';
-import connectDB from '@/mongodb/db';
-import { Post } from '@/mongodb/models/post';
 import { SignedIn } from '@clerk/nextjs';
+import { getAllPosts } from '@/firebase/models/post';
 
 export const revalidate = 0;
 
 export default async function Home() {
-  await connectDB();
-  const posts = await Post.getAllPosts();
+
+  const posts = await getAllPosts();
 
   return (
     <div className="grid grid-cols-8 mt-5 sm:px-5">
@@ -22,7 +21,7 @@ export default async function Home() {
 
       <section className="col-span-full md:col-span-6 xl:col-span-4 xl:max-w-xl mx-auto w-full">
         <SignedIn>
-        <PostForm />
+          <PostForm />
         </SignedIn>
         
         <PostFeed posts={posts} />

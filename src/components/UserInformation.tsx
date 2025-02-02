@@ -2,7 +2,7 @@ import { currentUser } from '@clerk/nextjs/server';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { SignedIn, SignedOut, SignInButton } from '@clerk/nextjs';
 import { Button } from './ui/button';
-import { IPostDocument } from '@/mongodb/models/post';
+import { IPostDocument } from '@/firebase/models/post';
 
 const UserInformation = async ({ posts }: { posts: IPostDocument[] }) => {
   const user = await currentUser();

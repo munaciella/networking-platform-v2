@@ -2,7 +2,7 @@
 
 import { currentUser } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
-import { Comment } from "@/mongodb/models/comment";
+import { Comment } from "@/firebase/models/comment";
 
 export default async function deleteCommentAction(commentId: string) {
   const user = await currentUser();

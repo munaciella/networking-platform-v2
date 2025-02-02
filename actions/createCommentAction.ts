@@ -2,8 +2,8 @@
 
 import { AddCommentRequestBody } from "@/app/api/posts/[post_id]/comments/route";
 
-import { ICommentBase } from "@/mongodb/models/comment";
-import { Post } from "@/mongodb/models/post";
+import { ICommentBase } from "@/firebase/models/comment";
+import { Post } from "@/firebase/models/post";
 import { currentUser } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 import { IUser } from "../types/user";

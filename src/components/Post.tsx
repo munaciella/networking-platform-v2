@@ -2,7 +2,7 @@
 
 import { Trash2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { IPostDocument } from "@/mongodb/models/post";
+import { IPost } from "@/firebase/models/post";
 import Image from "next/image";
 import { useUser } from "@clerk/nextjs";
 import { Button } from "./ui/button";
@@ -14,7 +14,7 @@ import PostOptions from "./PostOptions";
 
 import "@/lib/timeAgoSetup";
 
-function Post({ post }: { post: IPostDocument }) {
+function Post({ post }: { post: IPost }) {
   const { user } = useUser();
 const isAuthor = user?.id === post.user.userId;
 
@@ -55,7 +55,7 @@ const isAuthor = user?.id === post.user.userId;
             <Button
               variant="outline"
               onClick={() => {
-                const promise = deletePostAction(post._id as string);
+                const promise = deletePostAction(post.id as string);
                 toast.promise(promise, {
                   loading: "Deleting post...",
                   success: "Post deleted!",
@@ -84,7 +84,7 @@ const isAuthor = user?.id === post.user.userId;
         )}
       </div>
 
-      <PostOptions postId={post._id as string} post={post} />
+      <PostOptions postId={post.id as string} post={post} />
     </div>
   );
 }
