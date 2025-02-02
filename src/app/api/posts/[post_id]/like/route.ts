@@ -1,5 +1,5 @@
 import connectDB from "@/mongodb/db";
-import { Post } from "@/mongodb/models/post";
+import { Post } from "@/firebase/models/post";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 

@@ -1,22 +1,21 @@
-import connectDB from '@/mongodb/db';
-import { Post } from '@/mongodb/models/post';
+import { doc, getDoc, deleteDoc } from 'firebase/firestore';
 import { auth } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
+import { db } from '@/firebase/db';
 
 export async function GET(
   request: Request,
   { params }: { params: { post_id: string } }
 ) {
-  await connectDB();
-
   try {
-    const post = await Post.findById(params.post_id);
+    const postRef = doc(db, 'posts', params.post_id);
+    const postSnapshot = await getDoc(postRef);
 
-    if (!post) {
+    if (!postSnapshot.exists()) {
       return NextResponse.json({ error: 'Post not found' }, { status: 404 });
     }
 
-    return NextResponse.json(post);
+    return NextResponse.json({ id: postSnapshot.id, ...postSnapshot.data() });
   } catch (error) {
     console.error(error);
     return NextResponse.json(
@@ -40,23 +39,26 @@ export async function DELETE(
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  await connectDB();
-
   try {
-    const post = await Post.findById(params.post_id);
+    const postRef = doc(db, 'posts', params.post_id);
+    const postSnapshot = await getDoc(postRef);
 
-    if (!post) {
+    if (!postSnapshot.exists()) {
       return NextResponse.json({ error: 'Post not found' }, { status: 404 });
     }
 
-    if (post.user.userId !== userId) {
+    const postData = postSnapshot.data();
+
+    // Assuming `userId` is part of the post data and checking ownership
+    if (postData?.user?.userId !== userId) {
       return NextResponse.json(
         { error: 'Post does not belong to the user' },
         { status: 403 }
       );
     }
 
-    await post.removePost();
+    // Delete the post from Firestore
+    await deleteDoc(postRef);
 
     return NextResponse.json({ message: 'Post deleted successfully' });
   } catch (error) {

@@ -1,8 +1,8 @@
-import connectDB from '@/mongodb/db';
-import { IPostBase, Post } from '@/mongodb/models/post';
 import { NextResponse } from 'next/server';
-import { IUser } from '../../../../types/user';
 import { auth } from '@clerk/nextjs/server';
+import { collection, addDoc, getDocs, query, orderBy } from 'firebase/firestore';
+import { IUser } from '../../../../types/user';
+import { db } from '@/firebase/db';
 
 export interface AddPostRequestBody {
   user: IUser;
@@ -11,27 +11,31 @@ export interface AddPostRequestBody {
 }
 
 export async function POST(request: Request) {
-  const { userId } = await auth(); 
+  const { userId } = await auth();
 
-    if (!userId) {
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+  if (!userId) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
 
   try {
     const { user, text, imageUrl }: AddPostRequestBody = await request.json();
 
-    const postData: IPostBase = {
+    const postData = {
       user,
       text,
-      ...(imageUrl && { imageUrl }),
+      imageUrl: imageUrl || null,
+      createdAt: new Date(),
     };
 
-    const post = await Post.create(postData);
-    return NextResponse.json({ message: 'Post created successfully', post });
+    // Save post to Firestore
+    const docRef = await addDoc(collection(db, 'posts'), postData);
+
+    return NextResponse.json({ message: 'Post created successfully', postId: docRef.id });
   } catch (error) {
     console.error(error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     return NextResponse.json(
-      { error: `An error occurred while creating the post ${error}` },
+      { error: `An error occurred while creating the post: ${errorMessage}` },
       { status: 500 }
     );
   }
@@ -39,9 +43,14 @@ export async function POST(request: Request) {
 
 export async function GET() {
   try {
-    await connectDB();
+    // Get all posts from Firestore, ordered by createdAt
+    const postsQuery = query(collection(db, 'posts'), orderBy('createdAt', 'desc'));
+    const querySnapshot = await getDocs(postsQuery);
 
-    const posts = await Post.getAllPosts();
+    const posts = querySnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
 
     return NextResponse.json({ posts });
   } catch (error) {

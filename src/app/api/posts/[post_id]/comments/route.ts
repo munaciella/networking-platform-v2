@@ -1,6 +1,6 @@
 import connectDB from "@/mongodb/db";
-import { Comment, ICommentBase } from "@/mongodb/models/comment";
-import { Post } from "@/mongodb/models/post";
+import { Comment, ICommentBase } from "@/firebase/models/comment";
+import { Post } from "@/firebase/models/post";
 import { NextResponse } from "next/server";
 import { IUser } from "../../../../../../types/user";
 

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { MessageCircle, Repeat2, Send, ThumbsUpIcon } from "lucide-react";
 import { SignedIn, useUser } from "@clerk/nextjs";
 import { LikePostRequestBody } from "@/app/api/posts/[post_id]/like/route";
-import { IPostDocument } from "@/mongodb/models/post";
+import { IPost } from "@/firebase/models/post";
 import { cn } from "@/lib/utils";
 import { UnlikePostRequestBody } from "@/app/api/posts/[post_id]/unlike/route";
 import { Button } from "./ui/button";
@@ -18,7 +18,7 @@ function PostOptions({
   post,
 }: {
   postId: string;
-  post: IPostDocument;
+  post: IPost;
 }) {
   const [isCommentsOpen, setIsCommentsOpen] = useState(false);
   const { user } = useUser();
@@ -52,7 +52,7 @@ function PostOptions({
     setLikes(newLikes);
 
     const promise = fetch(
-        `/api/posts/${String(post._id)}/${liked ? "unlike" : "like"}`,
+        `/api/posts/${String(post.id)}/${liked ? "unlike" : "like"}`,
         {
           method: "POST",
           headers: {
@@ -67,7 +67,7 @@ function PostOptions({
           throw new Error("Failed to like or unlike post");
         }
   
-        const fetchLikesResponse = await fetch(`/api/posts/${post._id}/like`);
+        const fetchLikesResponse = await fetch(`/api/posts/${post.id}/like`);
         if (!fetchLikesResponse.ok) {
           setLiked(originalLiked);
           setLikes(originalLikes);
@@ -153,7 +153,7 @@ function PostOptions({
             <SignedIn>
 
           <CommentForm 
-          postId={String(post._id)} 
+          postId={String(post.id)} 
           />
             </SignedIn>
           <CommentFeed post={post} />

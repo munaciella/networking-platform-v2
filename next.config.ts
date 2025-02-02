@@ -13,13 +13,10 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'linkedincloneyt.blob.core.windows.net',
-      },
-      {
-        protocol: 'https',
-        hostname: 'networkplatform.blob.core.windows.net',
+        hostname: 'networking-platform-images.4b46c9ea0c0a2600df0ac627dd90a047.r2.cloudflarestorage.com',
       },
     ],
+    unoptimized: true, // Disable optimization for external sources
   },
   typescript: {
     ignoreBuildErrors: true, // Disable TypeScript checking during build
