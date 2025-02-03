@@ -19,7 +19,7 @@ const ThemeToggle = () => {
     <Button 
         variant='ghost'
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")} 
-      className="p-3 rounded-md mr-1"
+      className="p-3 rounded-md"
     >
       {theme === "dark" ? <SunIcon size={20} /> : <MoonIcon size={20} />}
     </Button>

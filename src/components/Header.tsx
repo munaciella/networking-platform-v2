@@ -31,7 +31,7 @@ const Header: React.FC = () => {
       </div>
 
       {/* Navigation Links */}
-      <div className="flex items-center space-x-4 px-6">
+      <div className="flex items-center space-x-3 px-2">
         <Link href="/" className="icon">
           <HomeIcon className="h-5" />
           <p>Home</p>
