@@ -2,7 +2,7 @@
 
 import { currentUser } from '@clerk/nextjs/server';
 import { IUser } from '../types/user';
-import { S3 } from 'aws-sdk'; 
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'; 
 import { randomUUID } from 'crypto';
 import { revalidatePath } from 'next/cache';
 import { collection, addDoc } from 'firebase/firestore';
@@ -33,10 +33,19 @@ export async function createPostAction(data: { text: string, imageBase64?: strin
     if (imageBase64?.trim()) {
       console.log('Uploading image to Cloudflare R2...');
 
-      const s3 = new S3({
+      const accessKeyId = process.env.CLOUDFLARE_R2_ACCESS_KEY;
+      const secretAccessKey = process.env.CLOUDFLARE_R2_SECRET_KEY;
+
+      if (!accessKeyId || !secretAccessKey) {
+        throw new Error("Cloudflare R2 credentials are not set in the environment variables.");
+      }
+
+      const s3 = new S3Client({
         endpoint: 'https://4b46c9ea0c0a2600df0ac627dd90a047.r2.cloudflarestorage.com', 
-        accessKeyId: process.env.CLOUDFLARE_R2_ACCESS_KEY, 
-        secretAccessKey: process.env.CLOUDFLARE_R2_SECRET_KEY, 
+        credentials: {
+          accessKeyId,
+          secretAccessKey,
+        },
         region: 'auto', 
       });
 
@@ -54,7 +63,8 @@ export async function createPostAction(data: { text: string, imageBase64?: strin
           ContentType: 'image/png',
         };
 
-        await s3.upload(uploadParams).promise();
+        const command = new PutObjectCommand(uploadParams);
+        await s3.send(command);
         image_url = `https://pub-8f5fd6db57a04cdaaa2c94011e2c3d5b.r2.dev/${file_name}`;
         console.log('Image uploaded successfully to Cloudflare R2:', image_url);
       }

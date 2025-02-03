@@ -1,8 +1,9 @@
-'use server'
+"use server";
 
 import { currentUser } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
-import { Comment } from "@/firebase/models/comment";
+import { doc, getDoc, deleteDoc } from "firebase/firestore";
+import { db } from "@/firebase/db";
 
 export default async function deleteCommentAction(commentId: string) {
   const user = await currentUser();
@@ -11,20 +12,24 @@ export default async function deleteCommentAction(commentId: string) {
     throw new Error("User not authenticated");
   }
 
-  const comment = await Comment.findById(commentId).exec();
+  const commentRef = doc(db, "comments", commentId);
+  const commentSnap = await getDoc(commentRef);
 
-  if (!comment) {
+  if (!commentSnap.exists()) {
     throw new Error("Comment not found");
   }
 
-  if (comment.user.userId !== user.id) {
+  const commentData = commentSnap.data();
+
+  if (commentData.user.userId !== user.id) {
     throw new Error("Comment does not belong to the user");
   }
 
   try {
-    await Comment.deleteOne({ _id: commentId });
+    await deleteDoc(commentRef);
     revalidatePath("/");
-  } catch {
+  } catch (error) {
+    console.error("Error deleting comment:", error);
     throw new Error("An error occurred while deleting the comment");
   }
 }

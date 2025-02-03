@@ -18,40 +18,40 @@ const PostForm = () => {
   const [loading, setLoading] = useState(false);
 
   const handlePostAction = async (formData: FormData) => {
-    const formDataCopy = formData;
-    ref.current?.reset();
-    const text = formDataCopy.get('postInput') as string;
-
-    if (!text.trim()) {
-      throw new Error('Post input cannot be empty');
+    if (!user) {
+      toast.error('You must be signed in to create a post');
+      return;
     }
+
+    const text = formData.get('postInput') as string;
+    if (!text.trim()) {
+      toast.error('Post input cannot be empty');
+      return;
+    }
+
     setPreview(null);
     setLoading(true);
 
     // Convert image to Base64 if present
-    const image = formDataCopy.get('image') as File | null;
+    const image = formData.get('image') as File | null;
     let imageBase64 = undefined;
 
     if (image) {
-      imageBase64 = await convertToBase64(image);  // Convert the image to Base64
+      imageBase64 = await convertToBase64(image);
     }
 
-    // Create the data to send to the backend
-    const data = {
-      text,
-      imageBase64,
-    };
-
     try {
-      await createPostAction(data);
+      await createPostAction({ text, imageBase64 });
+      toast.success('Post created!');
+      ref.current?.reset();
     } catch (error) {
-      console.log('Error creating post:', error);
+      console.error('Error creating post:', error);
+      toast.error('Error creating post');
     } finally {
       setLoading(false);
     }
   };
 
-  // Function to convert file to Base64
   const convertToBase64 = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -70,26 +70,22 @@ const PostForm = () => {
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      setPreview(URL.createObjectURL(file));  // Preview the image before upload
+      setPreview(URL.createObjectURL(file));
     }
   };
 
   return (
     <div className="mb-2 px-1">
-      <form ref={ref} 
-            encType="multipart/form-data" 
-            onSubmit={(e) => {
-              e.preventDefault();
-              const formData = new FormData(ref.current!);
-              const promise = handlePostAction(formData);
-              toast.promise(promise, {
-                loading: 'Posting...',
-                success: 'Post created!',
-                error: 'Error creating post',
-              });
-            }} 
-            className="p-3 bg-white rounded-lg border">
-        
+      <form
+        ref={ref}
+        encType="multipart/form-data"
+        onSubmit={(e) => {
+          e.preventDefault();
+          const formData = new FormData(ref.current!);
+          handlePostAction(formData);
+        }}
+        className="p-3 bg-white rounded-lg border"
+      >
         <div className="flex items-center space-x-2">
           <Avatar>
             <AvatarImage src={user?.imageUrl} />
@@ -120,22 +116,23 @@ const PostForm = () => {
         </div>
 
         {preview && (
-  <div className="mt-3">
-    <img 
-      src={preview} 
-      alt="Uploaded image" 
-      className="w-full object-cover"
-      onError={(e) => (e.currentTarget.style.display = 'none')}
-    />
-  </div>
-)}
+          <div className="mt-3">
+            <img
+              src={preview}
+              alt="Uploaded image"
+              className="w-full object-cover"
+              onError={(e) => (e.currentTarget.style.display = 'none')}
+            />
+          </div>
+        )}
 
         <div className="flex justify-end mt-2 space-x-2">
-          <Button 
-            type="button" 
-            variant={preview ? 'secondary' : 'outline'} 
-            onClick={() => fileInputRef.current?.click()} 
-            disabled={loading}>
+          <Button
+            type="button"
+            variant={preview ? 'secondary' : 'outline'}
+            onClick={() => fileInputRef.current?.click()}
+            disabled={loading}
+          >
             <ImageIcon className="mr-2" size={16} color="currentColor" />
             {preview ? 'Change' : 'Add'} image
           </Button>
@@ -145,7 +142,8 @@ const PostForm = () => {
               variant="outline"
               type="button"
               onClick={() => setPreview(null)}
-              disabled={loading}>
+              disabled={loading}
+            >
               <XIcon className="mr-2" size={16} color="currentColor" />
               Remove image
             </Button>

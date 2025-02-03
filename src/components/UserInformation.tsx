@@ -2,21 +2,30 @@ import { currentUser } from '@clerk/nextjs/server';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { SignedIn, SignedOut, SignInButton } from '@clerk/nextjs';
 import { Button } from './ui/button';
-import { IPostDocument } from '@/firebase/models/post';
+import { IPost } from '@/firebase/models/post';
+import { IComment } from '@/firebase/models/comment';
 
-const UserInformation = async ({ posts }: { posts: IPostDocument[] }) => {
+const UserInformation = async ({
+  posts,
+  comments = [],
+}: {
+  posts: IPost[];
+  comments: IComment[];
+}) => {
   const user = await currentUser();
+  const userId = user?.id;
+
 
   const firstName = user?.firstName;
   const lastName = user?.lastName;
   const imageUrl = user?.imageUrl;
 
-  const userPosts = posts?.filter((post) => post.user.userId === user?.id);
+  // Filter posts by user ID
+  const userPosts = posts?.filter((post) => post.user.userId === userId);
 
-  const userComments = posts.flatMap(
-    (post) =>
-      post?.comments?.filter((comment) => comment.user.userId === user?.id) ||
-      []
+  // Filter comments by user ID
+  const userComments = comments?.filter(
+    (comment) => comment.user.userId === userId
   );
 
   return (
@@ -47,30 +56,29 @@ const UserInformation = async ({ posts }: { posts: IPostDocument[] }) => {
       </SignedIn>
 
       <SignedOut>
-        <div className="text-center space-y-2">
+        <div className="text-center space-y-3">
           <p className="font-semibold">You are not signed in</p>
+          <p className="text-xs font-medium">Sign in to post and view your posts</p>
 
           <Button asChild className="bg-[#0b63c4] text-white">
             <SignInButton>Sign in</SignInButton>
           </Button>
         </div>
       </SignedOut>
-      
+
       <SignedIn>
+        <hr className="w-full border-gray-200 my-5" />
 
-      <hr className="w-full border-gray-200 my-5" />
+        <div className="flex justify-between w-full px-4 text-sm">
+          <p className="font-semibold text-gray-400">Posts</p>
+          <p className="text-blue-400">{userPosts.length}</p>
+        </div>
 
-      <div className="flex justify-between w-full px-4 text-sm">
-        <p className="font-semibold text-gray-400">Posts</p>
-        <p className="text-blue-400">{userPosts.length}</p>
-      </div>
-
-      <div className="flex justify-between w-full px-4 text-sm">
-        <p className="font-semibold text-gray-400">Comments</p>
-        <p className="text-blue-400">{userComments.length}</p>
-      </div>
+        <div className="flex justify-between w-full px-4 text-sm">
+          <p className="font-semibold text-gray-400">Comments</p>
+          <p className="text-blue-400">{userComments.length}</p>
+        </div>
       </SignedIn>
-      
     </div>
   );
 };

@@ -1,9 +1,6 @@
 "use server";
 
-import { AddCommentRequestBody } from "@/app/api/posts/[post_id]/comments/route";
-
-import { ICommentBase } from "@/firebase/models/comment";
-import { Post } from "@/firebase/models/post";
+import { ICommentBase, createComment } from "@/firebase/models/comment";
 import { currentUser } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 import { IUser } from "../types/user";
@@ -27,26 +24,16 @@ export default async function createCommentAction(
     lastName: user.lastName || "",
   };
 
-  const body: AddCommentRequestBody = {
-    user: userDB,
-    text: commentInput,
-  };
-
-  const post = await Post.findById(postId);
-
-  if (!post) {
-    throw new Error("Post not found");
-  }
-
   const comment: ICommentBase = {
     user: userDB,
     text: commentInput,
   };
 
   try {
-    await post.commentOnPost(comment);
+    await createComment(postId, comment);
     revalidatePath("/");
-  } catch {
+  } catch (error) {
+    console.error("Error adding comment:", error);
     throw new Error("An error occurred while adding comment");
   }
 }
