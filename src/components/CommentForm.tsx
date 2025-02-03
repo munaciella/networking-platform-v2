@@ -11,22 +11,33 @@ function CommentForm({ postId }: { postId: string }) {
   const { user } = useUser();
   const ref = useRef<HTMLFormElement>(null);
 
-  const createCommentActionWithPostId = createCommentAction.bind(null, postId);
-
   const handleCommentAction = async (formData: FormData): Promise<void> => {
     if (!user?.id) {
       toast.error("You need to be signed in to comment!");
-      return;  // Exit early if user is not authenticated
+      return;
     }
-
-    const formDataCopy = formData;
+  
+    const commentText = formData.get("commentInput") as string;
+  
+    if (!commentText.trim()) {
+      toast.error("Comment cannot be empty!");
+      return;
+    }
+  
     ref.current?.reset();
-
+  
+    const promise = createCommentAction(postId, formData);
+  
+    toast.promise(promise, {
+      loading: "Adding comment...",
+      success: "Comment added!",
+      error: "Failed to create comment",
+    });
+  
     try {
-      await createCommentActionWithPostId(formDataCopy);
+      await promise;
     } catch (error) {
       console.error(`Error creating comment: ${error}`);
-      toast.error("Failed to create comment");
     }
   };
 
@@ -43,18 +54,18 @@ function CommentForm({ postId }: { postId: string }) {
       onSubmit={(e) => {
         e.preventDefault();
         if (user?.id) {
-          const formData = new FormData(ref.current!);
-          handleCommentAction(formData);
+          handleCommentAction(new FormData(ref.current!));
+
         } else {
           toast.error("You need to be signed in to comment!");
         }
       }}
     >
       <Avatar>
-        <AvatarImage src={user?.imageUrl} />
+        <AvatarImage src={user?.imageUrl ?? ""} />
         <AvatarFallback>
-          {user?.firstName?.charAt(0)}
-          {user?.lastName?.charAt(0)}
+          {user?.firstName?.charAt(0) ?? "?"}
+          {user?.lastName?.charAt(0) ?? "?"}
         </AvatarFallback>
       </Avatar>
 
@@ -64,7 +75,7 @@ function CommentForm({ postId }: { postId: string }) {
           name="commentInput"
           placeholder="Add a comment..."
           className="outline-none flex-1 text-sm bg-transparent"
-          onClick={handleInputClick}  // Trigger toast on click
+          onClick={handleInputClick}
         />
         <button type="submit" hidden>
           Comment

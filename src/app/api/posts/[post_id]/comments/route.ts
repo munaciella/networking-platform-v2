@@ -1,6 +1,5 @@
-import connectDB from "@/mongodb/db";
-import { Comment, ICommentBase } from "@/firebase/models/comment";
-import { Post } from "@/firebase/models/post";
+import { db } from "@/firebase/db";
+import { doc, getDoc, getDocs, collection, query, where, deleteDoc, setDoc } from "firebase/firestore";
 import { NextResponse } from "next/server";
 import { IUser } from "../../../../../../types/user";
 
@@ -9,19 +8,22 @@ export async function GET(
   { params }: { params: { post_id: string } }
 ) {
   try {
-    await connectDB();
+    // Fetch all comments that belong to the post
+    const commentsRef = collection(db, "comments");
+    const q = query(commentsRef, where("postId", "==", params.post_id));
+    const commentsSnap = await getDocs(q);
 
-    const post = await Post.findById(params.post_id);
+    const comments = commentsSnap.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
 
-    if (!post) {
-      return NextResponse.json({ error: "Post not found" }, { status: 404 });
-    }
-
-    const comments = await post.getAllComments();
     return NextResponse.json(comments);
-  } catch {
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    
     return NextResponse.json(
-      { error: "An error occurred while fetching comments" },
+      { error: "An error occurred while fetching comments", details: errorMessage },
       { status: 500 }
     );
   }
@@ -36,25 +38,34 @@ export async function POST(
   request: Request,
   { params }: { params: { post_id: string } }
 ) {
-    await connectDB();
   const { user, text }: AddCommentRequestBody = await request.json();
-  try {
-    const post = await Post.findById(params.post_id);
 
-    if (!post) {
+  try {
+    // Ensure the post exists before adding a comment
+    const postRef = doc(db, "posts", params.post_id);
+    const postSnap = await getDoc(postRef);
+
+    if (!postSnap.exists()) {
       return NextResponse.json({ error: "Post not found" }, { status: 404 });
     }
 
-    const comment: ICommentBase = {
+    // Reference to top-level "comments" collection
+    const commentRef = doc(collection(db, "comments")); // Auto-generated ID
+
+    await setDoc(commentRef, {
+      postId: params.post_id, // Reference the post
       user,
       text,
-    };
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
 
-    await post.commentOnPost(comment);
     return NextResponse.json({ message: "Comment added successfully" });
-  } catch {
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    
     return NextResponse.json(
-      { error: "An error occurred while adding comment" },
+      { error: "An error occurred while adding a comment", details: errorMessage },
       { status: 500 }
     );
   }
@@ -66,35 +77,35 @@ export interface DeleteCommentRequestBody {
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { post_id: string; comment_id: string } }
+  { params }: { params: { comment_id: string } }
 ) {
-  await connectDB();
   const { user }: DeleteCommentRequestBody = await request.json();
 
   try {
-    const post = await Post.findById(params.post_id);
-    if (!post) {
-      return NextResponse.json({ error: "Post not found" }, { status: 404 });
-    }
+    const commentRef = doc(db, "comments", params.comment_id);
+    const commentSnap = await getDoc(commentRef);
 
-    const comment = await Comment.findById(params.comment_id);
-    if (!comment) {
+    if (!commentSnap.exists()) {
       return NextResponse.json({ error: "Comment not found" }, { status: 404 });
     }
 
-    if (comment.user.userId !== user.userId) {
+    const commentData = commentSnap.data();
+
+    if (commentData.user.userId !== user.userId) {
       return NextResponse.json(
         { error: "Comment does not belong to the user" },
         { status: 403 }
       );
     }
 
-    await Comment.deleteOne({ _id: params.comment_id });
+    await deleteDoc(commentRef);
 
     return NextResponse.json({ message: "Comment deleted successfully" });
-  } catch {
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    
     return NextResponse.json(
-      { error: "An error occurred while deleting the comment" },
+      { error: "An error occurred while deleting the comment", details: errorMessage },
       { status: 500 }
     );
   }

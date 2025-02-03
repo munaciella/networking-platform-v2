@@ -8,6 +8,7 @@ const Vector = () => {
           alt="Vector"
           width={400}
           height={400}
+          priority={true}
         />
         </div>
 

@@ -3,10 +3,8 @@
 import { useEffect, useState } from "react";
 import { MessageCircle, Repeat2, Send, ThumbsUpIcon } from "lucide-react";
 import { SignedIn, useUser } from "@clerk/nextjs";
-import { LikePostRequestBody } from "@/app/api/posts/[post_id]/like/route";
 import { IPost } from "@/firebase/models/post";
 import { cn } from "@/lib/utils";
-import { UnlikePostRequestBody } from "@/app/api/posts/[post_id]/unlike/route";
 import { Button } from "./ui/button";
 import CommentFeed from "./CommentFeed";
 import CommentForm from "./CommentForm";
@@ -44,9 +42,7 @@ function PostOptions({
       ? likes?.filter((like) => like !== user.id)
       : [...(likes ?? []), user.id];
 
-    const body: LikePostRequestBody | UnlikePostRequestBody = {
-      userId: user.id,
-    };
+    const body: { userId: string } = { userId: user.id };
 
     setLiked(!liked);
     setLikes(newLikes);
@@ -156,7 +152,7 @@ function PostOptions({
           postId={String(post.id)} 
           />
             </SignedIn>
-          <CommentFeed post={post} />
+          <CommentFeed postId={String(post.id)} postAuthorId={post.user.userId} />
         </div>
       )}
     </div>
