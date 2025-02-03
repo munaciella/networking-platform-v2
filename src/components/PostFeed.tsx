@@ -4,7 +4,7 @@ import Post from "./Post";
 
 async function PostFeed({ posts }: { posts: IPost[] }) {
   return (
-    <div className="space-y-2 pb-20 px-3">
+    <div className="space-y-2 pb-20 px-2">
       {posts?.map((post) => (
         <Post key={post.id as React.Key} post={post} />
       ))}

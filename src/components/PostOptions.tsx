@@ -1,5 +1,3 @@
-"use client";
-
 import { useEffect, useState } from "react";
 import { MessageCircle, Repeat2, Send, ThumbsUpIcon } from "lucide-react";
 import { SignedIn, useUser } from "@clerk/nextjs";
@@ -106,10 +104,11 @@ function PostOptions({
         </div>
       </div>
 
-      <div className="flex p-2 justify-between px-2 border-t">
+      {/* Responsive Button Layout */}
+      <div className="flex flex-wrap sm:flex-nowrap p-2 justify-between px-2 sm:p-0 border-t space-y-2 sm:space-y-0 sm:space-x-4">
         <Button
           variant="ghost"
-          className="postButton"
+          className="postButton w-full sm:w-auto text-sm mt-2"
           onClick={likeOrUnlikePost}
         >
           {/* If user has liked the post, show filled thumbs up icon */}
@@ -121,7 +120,7 @@ function PostOptions({
 
         <Button
           variant="ghost"
-          className="postButton"
+          className="postButton w-full sm:w-auto text-sm mt-0"
           onClick={() => setIsCommentsOpen(!isCommentsOpen)}
         >
           <MessageCircle
@@ -133,12 +132,12 @@ function PostOptions({
           Comment
         </Button>
 
-        <Button variant="ghost" className="postButton">
+        <Button variant="ghost" className="postButton w-full sm:w-auto text-sm mt-0">
           <Repeat2 className="mr-1" />
           Repost
         </Button>
 
-        <Button variant="ghost" className="postButton">
+        <Button variant="ghost" className="postButton w-full sm:w-auto text-sm mt-0">
           <Send className="mr-1" />
           Send
         </Button>
@@ -146,12 +145,9 @@ function PostOptions({
 
       {isCommentsOpen && (
         <div className="p-4">
-            <SignedIn>
-
-          <CommentForm 
-          postId={String(post.id)} 
-          />
-            </SignedIn>
+          <SignedIn>
+            <CommentForm postId={String(post.id)} />
+          </SignedIn>
           <CommentFeed postId={String(post.id)} postAuthorId={post.user.userId} />
         </div>
       )}
