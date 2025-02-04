@@ -1,3 +1,4 @@
+'use client'
 const UserStats = () => {
     return (
       <div className="bg-white dark:bg-zinc-800 mr-6 rounded-lg border py-4 px-6 mt-5">
