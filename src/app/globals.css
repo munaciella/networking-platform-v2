@@ -4,21 +4,20 @@
 
 @layer components {
   .icon {
-    @apply flex flex-col items-center justify-center text-sm font-light;
+    @apply flex flex-col items-center justify-center font-light text-sm;
   }
 
   .icon svg {
-    @apply fill-white stroke-gray-400;
+    @apply fill-white stroke-gray-400 dark:stroke-none;
   }
 
   .icon p {
-    @apply text-gray-500 text-xs;
+    @apply text-gray-500 dark:text-gray-200 text-xs;
   }
 
   .postButton {
-    @apply flex justify-center flex-1
+    @apply flex justify-center flex-1 text-gray-700 bg-white dark:bg-transparent dark:text-white dark:hover:bg-gray-700 dark:hover:text-white;
   }
-  
 }
 
 body {

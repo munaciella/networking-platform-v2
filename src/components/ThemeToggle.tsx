@@ -17,7 +17,7 @@ const ThemeToggle = () => {
 
   return (
     <Button 
-        variant='ghost'
+      variant={null}
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")} 
       className="p-3 rounded-md"
     >

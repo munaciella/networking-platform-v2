@@ -108,12 +108,12 @@ function PostOptions({
       <div className="flex flex-wrap sm:flex-nowrap p-2 justify-between px-2 sm:p-0 border-t space-y-2 sm:space-y-0 sm:space-x-4">
         <Button
           variant="ghost"
-          className="postButton w-full sm:w-auto text-sm mt-2"
+          className="postButton w-full sm:w-auto text-sm mt-2 lg:mt-0 md:mt-0 xl:mt-0"
           onClick={likeOrUnlikePost}
         >
           {/* If user has liked the post, show filled thumbs up icon */}
           <ThumbsUpIcon
-            className={cn("mr-1", liked && "text-[#4881c2] fill-[#4881c2]")}
+            className={cn("mr-1", liked && "text-[#4881c2] fill-[#4881c2] dark:text-gray-300 dark:fill-gray-300")}
           />
           Like
         </Button>

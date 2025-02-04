@@ -3,7 +3,7 @@ import { FaGithub, FaTwitter } from 'react-icons/fa';
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-100 dark:bg-gray-900 py-10 px-6 mt-10">
+    <footer className="bg-zinc-50 dark:bg-zinc-800 py-10 px-6 mt-20">
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 text-gray-600 dark:text-gray-300 text-sm">
         
         {/* Left Section - Navigation Links */}
@@ -28,14 +28,14 @@ const Footer = () => {
         </div>
 
         {/* Right Section - Newsletter Signup */}
-        <div>
+        <div className='flex flex-col space-y-2 mr-8'>
           <h3 className="font-semibold text-gray-800 dark:text-gray-200">Stay Updated</h3>
           <p className="text-xs mt-1">Subscribe to get the latest updates.</p>
           <form className="mt-2 flex">
             <input 
               type="email" 
               placeholder="Enter your email" 
-              className="flex-1 px-3 py-2 text-sm border rounded-l-md outline-none"
+              className="flex-1 px-2 py-2 text-sm border rounded-l-md outline-none"
             />
             <button 
               type="submit" 

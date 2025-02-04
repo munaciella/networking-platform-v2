@@ -2,7 +2,7 @@ import Image from "next/image"
 
 const Vector = () => {
   return (
-    <div className="mt-10">
+    <div className="mt-10 dark:hidden">
         <Image
           src="/Loading-Time.png"
           alt="Vector"

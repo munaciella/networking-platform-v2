@@ -111,7 +111,7 @@ function CommentFeed({ postId, postAuthorId }: CommentFeedProps) {
                 </AvatarFallback>
               </Avatar>
 
-              <div className="bg-gray-100 px-4 py-2 rounded-md w-full sm:w-auto md:min-w-[300px]"
+              <div className="bg-gray-100 dark:bg-zinc-700 px-4 py-2 rounded-md w-full sm:w-auto md:min-w-[300px]"
                 onClick={handleCommentClick}
               >
                 <div className="flex justify-between">
@@ -124,16 +124,16 @@ function CommentFeed({ postId, postAuthorId }: CommentFeedProps) {
                         </Badge>
                       )}
                     </div>
-                    <p className="text-xs text-gray-400">
+                    <p className="text-xs text-gray-400 dark:text-gray-300">
                       @{comment.user.firstName}
                       {comment.user.lastName}-
                       {comment.user.userId.toString().slice(-4)}
                     </p>
                   </div>
 
-                  <p className="text-xs text-gray-400 mt-1 ml-2">
+                  <p className="text-xs text-gray-400 dark:text-gray-300 mt-1 ml-2">
                     <ReactTimeAgo
-                      date={comment.createdAt.toDate()} // Convert Firestore timestamp to Date
+                      date={comment.createdAt.toDate()}
                       locale="en"
                     />
                   </p>

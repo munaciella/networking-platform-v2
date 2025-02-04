@@ -84,7 +84,7 @@ const PostForm = () => {
           const formData = new FormData(ref.current!);
           handlePostAction(formData);
         }}
-        className="p-3 bg-white rounded-lg border"
+        className="p-3 bg-white dark:bg-zinc-800 rounded-lg border"
       >
         <div className="flex items-center space-x-2">
           <Avatar>
@@ -99,7 +99,7 @@ const PostForm = () => {
             type="text"
             name="postInput"
             placeholder="Start writing a post..."
-            className="flex-1 outline-none rounded-full py-3 px-4 border"
+            className="flex-1 outline-none rounded-full py-3 px-4 border dark:border-gray-500 dark:bg-zinc-800 dark:text-gray-100"
           />
 
           <Input
@@ -129,16 +129,18 @@ const PostForm = () => {
         <div className="flex justify-end mt-2 space-x-2">
           <Button
             type="button"
+            className='text-white bg-black dark:bg-white dark:text-gray-800 dark:hover:bg-gray-200'
             variant={preview ? 'secondary' : 'outline'}
             onClick={() => fileInputRef.current?.click()}
             disabled={loading}
           >
-            <ImageIcon className="mr-2" size={16} color="currentColor" />
+            <ImageIcon className="mr-2 dark:text-gray-800" size={16} color="currentColor" />
             {preview ? 'Change' : 'Add'} image
           </Button>
 
           {preview && (
             <Button
+            className='text-white bg-black dark:bg-white dark:text-gray-800 dark:hover:bg-gray-200'
               variant="outline"
               type="button"
               onClick={() => setPreview(null)}

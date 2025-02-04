@@ -5,10 +5,6 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'links.papareact.com',
-      },
-      {
-        protocol: 'https',
         hostname: 'img.clerk.com',
       },
       {
@@ -16,13 +12,13 @@ const nextConfig: NextConfig = {
         hostname: 'networking-platform-images.4b46c9ea0c0a2600df0ac627dd90a047.r2.cloudflarestorage.com',
       },
     ],
-    unoptimized: true, // Disable optimization for external sources
+    unoptimized: true,
   },
   typescript: {
-    ignoreBuildErrors: true, // Disable TypeScript checking during build
+    ignoreBuildErrors: true,
   },
   eslint: {
-    ignoreDuringBuilds: true, // Disable linting during the build process
+    ignoreDuringBuilds: true,
   },
 };
 
