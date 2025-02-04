@@ -29,7 +29,7 @@ const UserInformation = async ({
   );
 
   return (
-    <div className="flex flex-col justify-center items-center bg-white mr-6 rounded-lg border py-4">
+    <div className="flex flex-col justify-center items-center bg-white dark:bg-zinc-800 mr-6 rounded-lg border py-4">
       <Avatar>
         {user?.id ? (
           <AvatarImage src={imageUrl} />
@@ -60,7 +60,7 @@ const UserInformation = async ({
           <p className="font-semibold">You are not signed in</p>
           <p className="text-xs font-medium">Sign in to post and view your posts</p>
 
-          <Button asChild className="bg-[#0b63c4] text-white">
+          <Button asChild className="bg-[#0b63c4] dark:bg-white text-white dark:text-black">
             <SignInButton>Sign in</SignInButton>
           </Button>
         </div>
@@ -70,13 +70,13 @@ const UserInformation = async ({
         <hr className="w-full border-gray-200 my-5" />
 
         <div className="flex justify-between w-full px-4 text-sm">
-          <p className="font-semibold text-gray-400">Posts</p>
-          <p className="text-blue-400">{userPosts.length}</p>
+          <p className="font-semibold text-gray-400 dark:text-gray-200">Posts</p>
+          <p className="text-blue-400 dark:text-gray-200">{userPosts.length}</p>
         </div>
 
         <div className="flex justify-between w-full px-4 text-sm">
-          <p className="font-semibold text-gray-400">Comments</p>
-          <p className="text-blue-400">{userComments.length}</p>
+          <p className="font-semibold text-gray-400 dark:text-gray-200">Comments</p>
+          <p className="text-blue-400 dark:text-gray-200">{userComments.length}</p>
         </div>
       </SignedIn>
     </div>

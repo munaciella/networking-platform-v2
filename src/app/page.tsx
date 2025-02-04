@@ -6,7 +6,6 @@ import Widget from '@/components/Widget';
 import { SignedIn } from '@clerk/nextjs';
 import { getAllPosts } from '@/firebase/models/post';
 import { getAllComments } from '@/firebase/models/comment';
-import Footer from '@/components/Footer';
 
 export const revalidate = 0;
 
@@ -32,10 +31,6 @@ export default async function Home() {
       <section className="hidden xl:inline justify-center col-span-2">
         <Widget />
       </section>
-
-      <div className='col-span-full'>
-        <Footer />
-      </div>
     </div>
   );
 }

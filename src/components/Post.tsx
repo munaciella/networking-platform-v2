@@ -19,7 +19,7 @@ function Post({ post }: { post: IPost }) {
 const isAuthor = user?.id === post.user.userId;
 
   return (
-    <div className="bg-white rounded-md border">
+    <div className="bg-white dark:bg-zinc-800 rounded-md border">
       <div className="p-4 flex space-x-2">
         <div>
           <Avatar>
@@ -54,6 +54,7 @@ const isAuthor = user?.id === post.user.userId;
           {isAuthor && (
             <Button
               variant="outline"
+              className="dark:bg-white dark:text-black dark:hover:bg-zinc-300 dark:hover:text-black"
               onClick={() => {
                 const promise = deletePostAction(post.id as string);
                 toast.promise(promise, {
