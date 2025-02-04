@@ -20,7 +20,7 @@ const robotoMono = Roboto_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Networking Platform',
+  title: 'NetworEd',
   description: 'An alternative professional networking platform',
 };
 
