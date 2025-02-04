@@ -1,36 +1,149 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Networking Platform
 
-## Getting Started
+A professional networking platform built with modern web technologies, featuring authentication, real-time updates, and a clean, responsive UI.
 
-First, run the development server:
+## Table of Contents
+1. [Overview](#overview)
+2. [Live Demo](#live-demo)
+3. [Tech Stack](#tech-stack)
+4. [Features](#features)
+5. [Installation & Setup](#installation-and-setup)
+6. [Project Structure](#project-structure)
+7. [Development & Deployment](#development-and-deployment)
+8. [Future Improvements](#future-improvements)]
+9. [Contributions & Feedback](#contributions-and-feedback)
+
+---
+
+## Overview
+
+This project is a full-stack networking platform where users can connect, interact, and engage through posts, comments, and messaging. Built using Next.js, it leverages Firebase for data storage and Clerk for authentication.
+
+---
+
+## 🚀 Live Demo
+
+- [Live Demo](https://networked.vercel.app/)
+
+---
+
+## Tech Stack
+
+Frontend:
+-	Next.js (App Router) – Server-side rendering, static generation
+-	TypeScript – Type safety
+-	Tailwind CSS – Utility-first styling
+-	shadcn/ui – Custom UI components
+
+Backend & Services:
+-	Firebase Firestore – NoSQL database
+-	Clerk – Authentication provider
+-	Vercel – Deployment & hosting
+-   Cloudflare - R2 - Object Storage
+
+Other Tools:
+-	Lucide Icons – Modern UI icons
+-   HTTP - Request - Fetching
+
+## Features
+
+✅ Authentication with Clerk (Google & Email)
+✅ Post Creation & Commenting (Firestore-backed)
+✅ Likes & Real-time Updates
+✅ Responsive UI with Tailwind & shadcn/ui
+✅ Dark Mode
+✅ Optimised Performance (Server & Client Rendering)
+✅ Secure Access with Firebase Rules
+
+---
+
+## Installation & Setup
+
+1. Clone the Repository
+
+```bash
+git clone https://github.com/yourusername/networking-platform-v2.git
+cd networking-platform-v2
+```
+
+2. Install Dependencies
+
+```bash
+npm install
+# or
+yarn install
+```
+
+3. Set Up Environment Variables
+
+Create a .env.local file in the root and add:
+
+```bash
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
+CLERK_SECRET_KEY=your_clerk_secret_key
+
+NEXT_PUBLIC_FIREBASE_API_KEY=your_firebase_api_key
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_firebase_auth_domain
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_firebase_project_id
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_firebase_storage_bucket
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_firebase_messaging_sender_id
+NEXT_PUBLIC_FIREBASE_APP_ID=your_firebase_app_id
+
+CLOUDFLARE_R2_ACCESS_KEY=your_cloudflare_r2_access_key
+CLOUDFLARE_R2_SECRET_KEY=your_cloudflare_r2_secret_key
+```
+
+4. Start the Development Server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The app should now be running at http://localhost:3000 🚀
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Project Structure
 
-## Learn More
+src/
+│── app/
+│   ├── page.tsx       # Home Page
+│   ├── layout.tsx     # Layout Wrapper
+│── components/
+│   ├── Header.tsx     # Navigation Bar
+│   ├── Post.tsx       # Post Component
+│   ├── Comment.tsx    # Comment Section
+│   ├── ThemeToggle.tsx # Dark Mode Switch
+│── lib/
+│   ├── firebase.ts    # Firebase Config
+│   ├── auth.ts        # Authentication Helpers
+│── styles/
+│   ├── globals.css    # Tailwind Styles
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Development & Deployment
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Local Development
+•	Runs on http://localhost:3000
+•	Uses Firebase Firestore Emulator (optional)
 
-## Deploy on Vercel
+Deploying to Vercel
+1.	Push your code to GitHub
+2.	Connect the repo to Vercel
+3.	Add environment variables
+4.	Deploy 🎉
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Future Improvements
+•	Optimised Search with Firestore queries
+•	Messaging System for real-time chats
+•	Notifications for user interactions
+•	Improved Mobile UI
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## Contributions & Feedback
+
+This project is open to improvements! If you have suggestions or want to contribute, feel free to open an issue or submit a pull request. 🚀
+
+Happy coding! 🚀
