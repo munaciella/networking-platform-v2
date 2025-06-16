@@ -49,7 +49,6 @@ export async function DELETE(
 
     const postData = postSnapshot.data();
 
-    // Assuming `userId` is part of the post data and checking ownership
     if (postData?.user?.userId !== userId) {
       return NextResponse.json(
         { error: 'Post does not belong to the user' },
@@ -57,7 +56,6 @@ export async function DELETE(
       );
     }
 
-    // Delete the post from Firestore
     await deleteDoc(postRef);
 
     return NextResponse.json({ message: 'Post deleted successfully' });

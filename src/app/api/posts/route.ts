@@ -27,7 +27,6 @@ export async function POST(request: Request) {
       createdAt: new Date(),
     };
 
-    // Save post to Firestore
     const docRef = await addDoc(collection(db, 'posts'), postData);
 
     return NextResponse.json({ message: 'Post created successfully', postId: docRef.id });

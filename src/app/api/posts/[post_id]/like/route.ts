@@ -1,6 +1,5 @@
 import { dbAdmin } from "@/firebase/admin";
 import admin from "firebase-admin";
-//import { doc, getDoc, updateDoc, arrayUnion } from "firebase/firestore";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
@@ -16,7 +15,6 @@ export async function GET(
     if (!snap.exists) {
       return NextResponse.json({ error: "Post not found" }, { status: 404 });
     }
-    // assume likes is an array of strings
     const likes = snap.data()?.likes ?? [];
     return NextResponse.json(likes);
   } catch (error) {

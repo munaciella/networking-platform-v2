@@ -1,10 +1,8 @@
 import { dbAdmin } from "@/firebase/admin";
-//import { doc, updateDoc, arrayRemove } from "firebase/firestore";
 import admin from "firebase-admin";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
-// src/app/api/posts/[post_id]/unlike/route.ts
 export async function POST(
   request: Request,
   { params }: { params: { post_id: string } }

@@ -8,7 +8,6 @@ export async function GET(
   { params }: { params: { post_id: string } }
 ) {
   try {
-    // Fetch all comments that belong to the post
     const commentsRef = collection(db, "comments");
     const q = query(commentsRef, where("postId", "==", params.post_id));
     const commentsSnap = await getDocs(q);
@@ -41,7 +40,6 @@ export async function POST(
   const { user, text }: AddCommentRequestBody = await request.json();
 
   try {
-    // Ensure the post exists before adding a comment
     const postRef = doc(db, "posts", params.post_id);
     const postSnap = await getDoc(postRef);
 
@@ -49,11 +47,10 @@ export async function POST(
       return NextResponse.json({ error: "Post not found" }, { status: 404 });
     }
 
-    // Reference to top-level "comments" collection
-    const commentRef = doc(collection(db, "comments")); // Auto-generated ID
+    const commentRef = doc(collection(db, "comments"));
 
     await setDoc(commentRef, {
-      postId: params.post_id, // Reference the post
+      postId: params.post_id,
       user,
       text,
       createdAt: new Date(),

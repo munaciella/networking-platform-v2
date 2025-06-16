@@ -5,7 +5,6 @@ import { IUser } from '../types/user';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'; 
 import { randomUUID } from 'crypto';
 import { revalidatePath } from 'next/cache';
-//import { collection, addDoc } from 'firebase/firestore';
 import { dbAdmin } from '@/firebase/admin';
 
 export async function createPostAction(data: { text: string, imageBase64?: string }) {
@@ -52,7 +51,6 @@ export async function createPostAction(data: { text: string, imageBase64?: strin
       const timestamp = Date.now();
       const file_name = `${randomUUID()}_${timestamp}.png`;
 
-      // Convert Base64 to Buffer
       const base64Data = imageBase64.split(',')[1];  
       if (base64Data) {
         const buffer = Buffer.from(base64Data, 'base64');
@@ -70,7 +68,6 @@ export async function createPostAction(data: { text: string, imageBase64?: strin
       }
     }
 
-    // Save post to Firestore (only once)
     const postData = {
       user: userDB,
       text: postInput,
@@ -78,7 +75,6 @@ export async function createPostAction(data: { text: string, imageBase64?: strin
       createdAt: new Date(),
     };
 
-    //await addDoc(collection(db, 'posts'), postData);
     await dbAdmin.collection('posts').add(postData);
 
   } catch (error) {
