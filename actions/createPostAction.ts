@@ -5,8 +5,8 @@ import { IUser } from '../types/user';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'; 
 import { randomUUID } from 'crypto';
 import { revalidatePath } from 'next/cache';
-import { collection, addDoc } from 'firebase/firestore';
-import { db } from '@/firebase/db';
+//import { collection, addDoc } from 'firebase/firestore';
+import { dbAdmin } from '@/firebase/admin';
 
 export async function createPostAction(data: { text: string, imageBase64?: string }) {
   const user = await currentUser();
@@ -78,7 +78,8 @@ export async function createPostAction(data: { text: string, imageBase64?: strin
       createdAt: new Date(),
     };
 
-    await addDoc(collection(db, 'posts'), postData);
+    //await addDoc(collection(db, 'posts'), postData);
+    await dbAdmin.collection('posts').add(postData);
 
   } catch (error) {
     console.log("Error creating post:", error);
