@@ -6,6 +6,7 @@ import { ClerkProvider } from '@clerk/nextjs';
 import { Toaster } from '@/components/ui/sonner';
 import { ThemeProvider } from 'next-themes';
 import Footer from '@/components/Footer';
+import AuthBridge from '@/components/AuthBridge';
 
 const roboto = Roboto({
   variable: '--font-roboto',
@@ -38,6 +39,7 @@ export default function RootLayout({
         <body
           className={`min-h-screen flex flex-col ${roboto.variable} ${robotoMono.variable}`}
         >
+          <AuthBridge />
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem={true} >
           <Toaster position='bottom-left'/>
 
