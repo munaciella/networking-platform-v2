@@ -11,3 +11,4 @@ if (!admin.apps.length) {
 }
 
 export const dbAdmin = admin.firestore();
+export const serverTimestamp = admin.firestore.FieldValue.serverTimestamp;
